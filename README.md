@@ -1,5 +1,5 @@
 # pm_monitor
-Setup a raspberry pi to monitor and report on PM air quality 
+Setup a raspberry pi to monitor and report on PM air quality. Based on https://www.raspberrypi.org/blog/monitor-air-quality-with-a-raspberry-pi/
 
 
 ```
