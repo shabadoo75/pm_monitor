@@ -1,5 +1,4 @@
 ---
-
 - name: update current packages
   apt:
     force_apt_get: yes
@@ -12,9 +11,22 @@
     state: present
     force_apt_get: yes
   with_items:
-     - python3
-     - python3-pip
-     - vim
+    - python3
+    - python3-pip
+    - vim
+    - sysstat
+
+- name: Download Datadog agent source
+  get_url:
+    url: https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/setup_agent.sh
+    dest: /tmp/setup_agent.sh
+    mode: "0755"
+
+- name: Run datadog agent install
+  shell: DD_API_KEY={{DD_API_KEY}} sh -c /tmp/setup_agent.sh
+  args:
+    chdir: /tmp
+    creates: /root/.datadog-agent/bin/agent
 
 - name: install pip packages
   pip:
@@ -49,7 +61,7 @@
   replace:
     path: /etc/hosts
     regexp: '\slocalhost'
-    replace: '  localhost {{ hostname }}'
+    replace: "  localhost {{ hostname }}"
   when: hostname is defined
 
 - name: set the timezone to Sydney
@@ -62,9 +74,9 @@
     state: link
 
 - cron: name="send data"
-        minute="*/5" 
-        user="pi"
-        job=":"
+    minute="*/5"
+    user="pi"
+    job=":"
 
 - name: ssh service state
   service: name=ssh state=started enabled=yes
