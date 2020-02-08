@@ -16,18 +16,6 @@
     - vim
     - sysstat
 
-- name: Download Datadog agent source
-  get_url:
-    url: https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/setup_agent.sh
-    dest: /tmp/setup_agent.sh
-    mode: "0755"
-
-- name: Run datadog agent install
-  shell: DD_API_KEY={{DD_API_KEY}} sh -c /tmp/setup_agent.sh
-  args:
-    chdir: /tmp
-    creates: /root/.datadog-agent/bin/agent
-
 - name: install pip packages
   pip:
     executable: /usr/bin/pip3
@@ -35,13 +23,25 @@
       - pyserial
       - adafruit-io
 
-- name: pi use vim!
+- name: Download Datadog agent source
+  get_url:
+    url: https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/setup_agent.sh
+    dest: /tmp/setup_agent.sh
+    mode: "0755"
+
+- name: Run datadog agent install
+  shell: DD_API_KEY={{DD_API_KEY}} DD_SKIP_INTEGRATIONS=1 sh -c /tmp/setup_agent.sh
+  args:
+    chdir: /tmp
+    creates: /root/.datadog-agent/bin/agent
+
+- name: use vim
   lineinfile: dest=/home/pi/.bashrc line='export EDITOR=vim'
   with_items:
     - pi
     - root
 
-- name: set keyboard layout
+- name: US keyboard layout
   copy:
     src: keyboard
     dest: /etc/default/keyboard
