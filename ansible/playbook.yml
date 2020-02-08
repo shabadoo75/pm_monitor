@@ -1,0 +1,11 @@
+---
+# This playbook sets up a Pi as a PM monitor
+
+- name: configure pi
+  hosts: pi
+  remote_user: pi
+  become_user: root
+  become: yes
+
+  roles:
+    - pm-monitor

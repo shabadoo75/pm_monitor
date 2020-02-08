@@ -1,0 +1,70 @@
+---
+
+- name: update current packages
+  apt:
+    force_apt_get: yes
+    update_cache: yes
+    upgrade: yes
+
+- name: Install new packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    force_apt_get: yes
+  with_items:
+     - python3
+     - python3-pip
+     - vim
+
+- name: install pip packages
+  pip:
+    executable: /usr/bin/pip3
+    name:
+      - pyserial
+      - adafruit-io
+
+- name: pi use vim!
+  lineinfile: dest=/home/pi/.bashrc line='export EDITOR=vim'
+  with_items:
+    - pi
+    - root
+
+- name: set keyboard layout
+  copy:
+    src: keyboard
+    dest: /etc/default/keyboard
+    owner: root
+    group: root
+    mode: 0644
+
+- name: change the hostname
+  hostname: name={{ hostname }}
+  when: hostname is defined
+
+- name: set the hostname fact also
+  set_fact: ansible_hostname={{ hostname }}
+  when: hostname is defined
+
+- name: add local host name to /etc/hosts
+  replace:
+    path: /etc/hosts
+    regexp: '\slocalhost'
+    replace: '  localhost {{ hostname }}'
+  when: hostname is defined
+
+- name: set the timezone to Sydney
+  file:
+    src: /usr/share/zoneinfo/Australia/Sydney
+    dest: /etc/localtime
+    owner: root
+    group: root
+    mode: 0644
+    state: link
+
+- cron: name="send data"
+        minute="*/5" 
+        user="pi"
+        job=":"
+
+- name: ssh service state
+  service: name=ssh state=started enabled=yes
