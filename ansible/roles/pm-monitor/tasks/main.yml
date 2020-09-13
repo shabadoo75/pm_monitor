@@ -15,6 +15,8 @@
     - python3-pip
     - vim
     - sysstat
+    - python-smbus
+    - i2c-tools
 
 - name: install pip packages
   pip:
@@ -22,6 +24,34 @@
     name:
       - pyserial
       - adafruit-io
+      - gpiozero
+      - datadog
+      - adafruit-circuitpython-ssd1306
+      - pillow
+      - RPI.GPIO
+      - adafruit-blinka
+
+- name: enable SPI
+  lineinfile:
+    path: /boot/config.txt
+    line: dtparam=spi=on
+
+- name: enable IC2
+  lineinfile:
+    path: /boot/config.txt
+    line: idtparam=ic2_arm=on
+
+- name: enable IC2 kernel module
+  lineinfile:
+    path: /etc/modules-load.d/modules.conf
+    line: ic2-dev
+
+- name: add dd keys to environment
+  blockinfile:
+    path: /etc/environment
+    block: |
+      DD_APP_KEY={{DD_APP_KEY}}
+      DD_API_KEY={{DD_API_KEY}}
 
 - name: Download Datadog agent source
   get_url:
@@ -80,6 +110,14 @@
     minute="*/5"
     user="pi"
     job=":"
+
+- name: install code
+  copy:
+    src: pm.py
+    dest: /home/pi/pm.py
+    owner: pi
+    group: pi
+    mode: 0644
 
 - name: ssh service state
   service: name=ssh state=started enabled=yes
