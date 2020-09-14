@@ -8,7 +8,6 @@ import socket
 from datetime import datetime
 import gpiozero
 
-
 from board import SCL, SDA
 import busio
 from PIL import Image, ImageDraw, ImageFont
@@ -32,6 +31,7 @@ def post_to_datadog(pm25, pm10):
   except Exception as e:
     print(f"send to datadog failed {repr(e)}")
 
+
 def display_on_screen(pm25, pm10):
   # Draw a black filled box to clear the image.
   draw.rectangle((0, 0, width, height), outline=0, fill=0)
@@ -46,9 +46,9 @@ def display_on_screen(pm25, pm10):
 
   time = datetime.now().strftime('%H:%M:%S')
 
-  draw.text((0, top+0),  f"Time ---> {time}", font=font, fill=255)
-  draw.text((0, top+11), f"PM --->2.5: {PM25}", font=font, fill=255)
-  draw.text((0, top+22), f"PM ---> 10: {PM10}", font=font, fill=255)
+  draw.text((0, top+0),  f"Time     ---> {time}", font=font, fill=255)
+  draw.text((0, top+11), f"PM 2.5 ---> {pm25}", font=font, fill=255)
+  draw.text((0, top+22), f"PM 10  ---> {pm10}", font=font, fill=255)
  
   # Display image.
   disp.image(image)
