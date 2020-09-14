@@ -1,4 +1,4 @@
-import serial, time
+import time
 import datadog
 import os
 import subprocess
@@ -7,21 +7,12 @@ import signal
 import socket
 from datetime import datetime
 import gpiozero
+import sds011
 
 from board import SCL, SDA
 import busio
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
-
-#serial port used by the PM meter
-pm_ser = serial.Serial('/dev/ttyUSB0')
-
-dd_options = {
-    'api_key': os.getenv('DD_API_KEY'),
-    'app_key': os.getenv('DD_APP_KEY')
-}
-
-datadog.initialize(**dd_options)
 
 def post_to_datadog(pm25, pm10):
 
@@ -80,21 +71,34 @@ def init_screen():
   return(disp, draw, width, height, image)
 
 
+sensor = SDS011("/dev/ttyUSB0", use_query_mode=True)
+
+dd_options = {
+    'api_key': os.getenv('DD_API_KEY'),
+    'app_key': os.getenv('DD_APP_KEY')
+}
+
+datadog.initialize(**dd_options)
+
 disp, draw, width, height, image = init_screen()
 
 while True:
 
-  data = []
+  # wake up the sensor and give it time to warm up
+  sensor.sleep(sleep=False)
+  time.sleep(30)
 
-  for index in range(0,10):
-    datum = pm_ser.read()
-    data.append(datum)
+  try:
+    pm25, pm10 = sensor.query()
+    print(f"pm2.5: {pm25}\npm10: {pm10}\n")
+    post_to_datadog(pm25, pm10)
+    display_on_screen(pm25, pm10)
+  except Exception as e:
+    print(f"Couldn't read sensor: {e}")
+    print(traceback.format_exc())
 
-  pm25 = int.from_bytes(b''.join(data[2:4]), byteorder='little') / 10
-  pm10 = int.from_bytes(b''.join(data[4:6]), byteorder='little') / 10
+  # sleep the sensor
+  sensor.sleep()
 
-  print(f"pm2.5: {pm25}\npm10: {pm10}\n")
-  post_to_datadog(pm25, pm10)
-  display_on_screen(pm25, pm10)
 
   time.sleep(60)
