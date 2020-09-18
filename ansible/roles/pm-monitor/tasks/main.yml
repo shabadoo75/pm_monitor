@@ -119,5 +119,20 @@
     group: pi
     mode: 0644
 
+- name: get the sds011 library
+  unarchive:
+    src: https://github.com/ikalchev/py-sds011/archive/master.zip
+    dest: /home/pi
+    owner: pi
+    group: pi
+    mode: 0755
+    remote_src: yes
+    creates: /home/pi/sds011
+
+- name: change dir name of the sds011 library
+  command:
+    cmd: mv /home/pi/py-sds011-master /home/pi/sds011
+    creates: /home/pi/sds011
+
 - name: ssh service state
   service: name=ssh state=started enabled=yes
