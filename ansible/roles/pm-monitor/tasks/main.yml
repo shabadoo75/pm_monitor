@@ -17,6 +17,9 @@
     - sysstat
     - python-smbus
     - i2c-tools
+    - supervisor
+    - libopenjp2-7
+    - libtiff5
 
 - name: install pip packages
   pip:
@@ -129,10 +132,15 @@
     remote_src: yes
     creates: /home/pi/sds011
 
-- name: change dir name of the sds011 library
+- name: move sds011 library dir
   command:
-    cmd: mv /home/pi/py-sds011-master /home/pi/sds011
+    cmd: mv /home/pi/py-sds011-master/sds011 /home/pi/
     creates: /home/pi/sds011
+
+- name: cleanup DL dir
+  file:
+    src: /home/pi/py-sds011-master
+    state: absent
 
 - name: ssh service state
   service: name=ssh state=started enabled=yes

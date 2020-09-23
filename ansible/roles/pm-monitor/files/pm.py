@@ -20,7 +20,7 @@ def post_to_datadog(pm25, pm10):
     datadog.api.Metric.send(metric='home.pm25', points=(pm25), host=socket.gethostname(), tags=['location:home', 'environment:production'])
     datadog.api.Metric.send(metric='home.pm10', points=(pm10), host=socket.gethostname(), tags=['location:home', 'environment:production'])
   except Exception as e:
-    print(f"send to datadog failed {repr(e)}")
+    print(f"send to datadog failed: {e}")
 
 
 def display_on_screen(pm25, pm10):
@@ -71,7 +71,7 @@ def init_screen():
   return(disp, draw, width, height, image)
 
 
-sensor = SDS011("/dev/ttyUSB0", use_query_mode=True)
+sensor = sds011.SDS011("/dev/ttyUSB0", use_query_mode=True)
 
 dd_options = {
     'api_key': os.getenv('DD_API_KEY'),
