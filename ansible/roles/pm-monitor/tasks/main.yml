@@ -42,7 +42,7 @@
 - name: enable IC2
   lineinfile:
     path: /boot/config.txt
-    line: idtparam=ic2_arm=on
+    line: dtparam=ic2_arm=on
 
 - name: enable IC2 kernel module
   lineinfile:
