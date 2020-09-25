@@ -101,4 +101,4 @@ while True:
   sensor.sleep()
 
 
-  time.sleep(60)
+  time.sleep(300)
