@@ -14,7 +14,6 @@
     - python3
     - python3-pip
     - vim
-    - sysstat
     - python-smbus
     - i2c-tools
     - supervisor
@@ -49,25 +48,6 @@
   lineinfile:
     path: /etc/modules-load.d/modules.conf
     line: ic2-dev
-
-- name: add dd keys to environment
-  blockinfile:
-    path: /etc/environment
-    block: |
-      DD_APP_KEY={{DD_APP_KEY}}
-      DD_API_KEY={{DD_API_KEY}}
-
-#- name: Download Datadog agent source
-#  get_url:
-#    url: https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/setup_agent.sh
-#    dest: /tmp/setup_agent.sh
-#    mode: "0755"
-#
-#- name: Run datadog agent install
-#  shell: DD_API_KEY={{DD_API_KEY}} DD_START_AGENT=0 DD_SKIP_INTEGRATIONS=1 sh -c /tmp/setup_agent.sh
-#  args:
-#    chdir: /tmp
-#    creates: /root/.datadog-agent/bin/agent
 
 - name: use vim
   lineinfile:
@@ -110,11 +90,6 @@
     mode: 0644
     state: link
 
-- cron: name="send data"
-    minute="*/5"
-    user="pi"
-    job=":"
-
 - name: install code
   copy:
     src: pm.py
@@ -144,4 +119,7 @@
     state: absent
 
 - name: ssh service state
-  service: name=ssh state=started enabled=yes
+  service:
+    name: ssh
+    state: started
+    enabled: yes

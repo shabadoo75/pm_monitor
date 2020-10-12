@@ -1,0 +1,94 @@
+---
+- name: Install new packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    force_apt_get: yes
+  with_items:
+    - sysstat
+
+- name: add dd keys to environment
+  blockinfile:
+    path: /etc/environment
+    block: |
+      DD_APP_KEY={{DD_APP_KEY}}
+      DD_API_KEY={{DD_API_KEY}}
+
+- name: Download Datadog agent source
+  get_url:
+    url: https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/setup_agent.sh
+    dest: /tmp/setup_agent.sh
+    mode: "0755"
+
+- name: Run datadog agent install
+  shell: DD_API_KEY={{DD_API_KEY}} DD_START_AGENT=0 DD_SKIP_INTEGRATIONS=1 sh -c /tmp/setup_agent.sh
+  args:
+    chdir: /tmp
+    creates: /root/.datadog-agent/bin/agent
+
+- name: move datadog to a new home
+  command:
+    cmd: cp -r /root/.datadog-agent/* /opt/datadog-agent
+
+- name: copy the update path script
+  copy:
+    src: update_venv_paths.sh
+    dest: /tmp/update_venv_paths.sh
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: update paths in venv
+  script:
+    cmd: /tmp/update_venv_paths.sh
+
+- name: copy the link references script
+  copy:
+    src: fix_venv_links.sh
+    dest: /tmp/fix_venv_links.sh
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: update venv links
+  script:
+    cmd: /tmp/fix_venv_links.sh
+
+- name: copy the start agent script
+  copy:
+    src: start_agent.sh
+    dest: /opt/datadog-agent
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Add a datadog user
+  user:
+    name: datadog
+    system: yes
+    state: present
+    comment: Datadog user
+
+- name: Update file ownership
+  command:
+    cmd: chown datadog:datadog -R /opt/datadog-agent
+
+- name: Update Daemon settings
+  lineinfile:
+    path: /opt/datadog-agent/agent/supervisor.conf
+    regexp: '^nodaemon ='
+    line: nodaemon = false
+
+- name: copy the systemd file
+  copy:
+    src: datadog-agent.service
+    dest: /etc/systemd/system/datadog-agent.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: datadog service settings
+  service:
+    name: datadog-agent
+    state: started
+    enabled: yes
