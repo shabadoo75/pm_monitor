@@ -28,31 +28,15 @@
 
 - name: move datadog to a new home
   command:
-    cmd: cp -r /root/.datadog-agent/* /opt/datadog-agent
-
-- name: copy the update path script
-  copy:
-    src: update_venv_paths.sh
-    dest: /tmp/update_venv_paths.sh
-    owner: root
-    group: root
-    mode: '0755'
+    cmd: cp -r /root/.datadog-agent /opt/datadog-agent
 
 - name: update paths in venv
   script:
-    cmd: /tmp/update_venv_paths.sh
-
-- name: copy the link references script
-  copy:
-    src: fix_venv_links.sh
-    dest: /tmp/fix_venv_links.sh
-    owner: root
-    group: root
-    mode: '0755'
+    cmd: update_venv_paths.sh
 
 - name: update venv links
   script:
-    cmd: /tmp/fix_venv_links.sh
+    cmd: fix_venv_links.sh
 
 - name: copy the start agent script
   copy:

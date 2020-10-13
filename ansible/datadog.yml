@@ -1,0 +1,9 @@
+
+- name: configure pi
+  hosts: sportsbar
+  remote_user: pi
+  become_user: root
+  become: yes
+
+  roles:
+    - pi-datadog
