@@ -1,5 +1,5 @@
 ---
-- name: update current packages
+- name: Update current packages
   apt:
     force_apt_get: yes
     update_cache: yes
@@ -20,6 +20,10 @@
     - libopenjp2-7
     - libtiff5
     - fonts-dejavu
+
+- name: make python3 the default
+  command:
+    cmd: update-alternatives --install /usr/bin/python python /usr/bin/python3 10
 
 - name: install pip packages
   pip:
@@ -90,14 +94,6 @@
     mode: 0644
     state: link
 
-- name: install code
-  copy:
-    src: pm.py
-    dest: /home/pi/pm.py
-    owner: pi
-    group: pi
-    mode: 0644
-
 - name: get the sds011 library
   unarchive:
     src: https://github.com/ikalchev/py-sds011/archive/master.zip
@@ -117,6 +113,21 @@
   file:
     path: /home/pi/py-sds011-master
     state: absent
+
+- name: install code
+  copy:
+    src: pm.py
+    dest: /home/pi/pm.py
+    owner: pi
+    group: pi
+    mode: 0644
+
+- name: Setup the PM monitor cron
+  cron:
+    name: "take a PM reading"
+    minute: "*/5"
+    user: "pi"
+    job: "python /home/pi/pm.py"
 
 - name: ssh service state
   service:

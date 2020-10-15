@@ -82,23 +82,20 @@ datadog.initialize(**dd_options)
 
 disp, draw, width, height, image = init_screen()
 
-while True:
+# wake up the sensor and give it time to warm up
+sensor.sleep(sleep=False)
+time.sleep(30)
 
-  # wake up the sensor and give it time to warm up
-  sensor.sleep(sleep=False)
-  time.sleep(30)
+try:
+  pm25, pm10 = sensor.query()
+  print(f"pm2.5: {pm25}\npm10: {pm10}\n")
+  post_to_datadog(pm25, pm10)
+  display_on_screen(pm25, pm10)
+except Exception as e:
+  print(f"Couldn't read sensor: {e}")
+  print(traceback.format_exc())
 
-  try:
-    pm25, pm10 = sensor.query()
-    print(f"pm2.5: {pm25}\npm10: {pm10}\n")
-    post_to_datadog(pm25, pm10)
-    display_on_screen(pm25, pm10)
-  except Exception as e:
-    print(f"Couldn't read sensor: {e}")
-    print(traceback.format_exc())
-
-  # sleep the sensor
-  sensor.sleep()
+# sleep the sensor
+sensor.sleep()
 
 
-  time.sleep(300)

@@ -1,6 +1,6 @@
 
 - name: configure pi
-  hosts: sportsbar
+  hosts: pi
   remote_user: pi
   become_user: root
   become: yes
