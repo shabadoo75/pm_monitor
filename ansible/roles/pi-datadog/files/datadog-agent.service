@@ -1,0 +1,13 @@
+[Unit]
+Description="Datadog Agent"
+After=network.target
+
+[Service]
+Type=forking
+User=datadog
+WorkingDirectory=/opt/datadog-agent
+ExecStart=/opt/datadog-agent/start_agent.sh
+ExecStop=/opt/datadog-agent/venv/bin/supervisorctl -c /opt/datadog-agent/agent/supervisor.conf shutdown
+
+[Install]
+WantedBy=multi-user.target
