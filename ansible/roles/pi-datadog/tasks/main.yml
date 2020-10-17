@@ -71,7 +71,7 @@
     group: root
     mode: '0644'
 
-- name: datadog service settings
+- name: enable and start the datadog service
   service:
     name: datadog-agent
     state: started

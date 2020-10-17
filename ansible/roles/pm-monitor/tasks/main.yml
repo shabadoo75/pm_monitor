@@ -7,21 +7,21 @@
 
 - name: Install new packages
   apt:
-    name: "{{ item }}"
-    state: present
+    name: [
+           'python3',
+           'python3-pip',
+           'vim',
+           'python-smbus',
+           'i2c-tools',
+           'supervisor',
+           'libopenjp2-7',
+           'libtiff5',
+           'fonts-dejavu'
+          ]
+    state: latest
     force_apt_get: yes
-  with_items:
-    - python3
-    - python3-pip
-    - vim
-    - python-smbus
-    - i2c-tools
-    - supervisor
-    - libopenjp2-7
-    - libtiff5
-    - fonts-dejavu
 
-- name: make python3 the default
+- name: make python3 the system default
   command:
     cmd: update-alternatives --install /usr/bin/python python /usr/bin/python3 10
 
@@ -43,15 +43,15 @@
     path: /boot/config.txt
     line: dtparam=spi=on
 
-- name: enable IC2
+- name: enable I2C
   lineinfile:
     path: /boot/config.txt
-    line: dtparam=ic2_arm=on
+    line: dtparam=i2c_arm=on
 
-- name: enable IC2 kernel module
+- name: enable I2C kernel module
   lineinfile:
     path: /etc/modules-load.d/modules.conf
-    line: ic2-dev
+    line: i2c-dev
 
 - name: use vim
   lineinfile:

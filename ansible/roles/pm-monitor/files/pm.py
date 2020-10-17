@@ -56,8 +56,8 @@ def init_screen():
   disp = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c)
    
   # Clear display.
-  disp.fill(0)
-  disp.show()
+  #disp.fill(0)
+  #disp.show()
    
   # Create blank image for drawing.
   # Make sure to create image with mode '1' for 1-bit color.
@@ -80,11 +80,11 @@ dd_options = {
 
 datadog.initialize(**dd_options)
 
-disp, draw, width, height, image = init_screen()
-
 # wake up the sensor and give it time to warm up
 sensor.sleep(sleep=False)
 time.sleep(30)
+
+disp, draw, width, height, image = init_screen()
 
 try:
   pm25, pm10 = sensor.query()
