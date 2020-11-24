@@ -7,7 +7,7 @@ Based on https://www.raspberrypi.org/blog/monitor-air-quality-with-a-raspberry-p
 
 ## Installation
 
-ssh to the pi you want to use as the bridge
+ssh to the pi you want to use as the monitor
 
 download the code
 
