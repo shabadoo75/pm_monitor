@@ -1,7 +1,27 @@
 # pm_monitor
-Setup a raspberry pi to monitor and report on PM air quality. Based on https://www.raspberrypi.org/blog/monitor-air-quality-with-a-raspberry-pi/
+Setup a Raspberry Pi to monitor and report on PM air quality.
 
+
+Based on https://www.raspberrypi.org/blog/monitor-air-quality-with-a-raspberry-pi/
+
+
+## Installation
+
+ssh to the pi you want to use as the bridge
+
+download the code
 
 ```
-ansible-playbook -i hosts -u pi -k -e "hostname=pm-monitor" -e "DD_API_KEY=$DD_API_KEY" -e "DD_APP_KEY=$DD_APP_KEY" ansible/playbook.yml
+curl -L -O https://github.com/shabadoo75/pm_monitor/archive/main.zip
+```
+
+unzip
+```
+unzip main.zip
+```
+
+install
+```
+cd pm_monitor-main
+./install.sh
 ```

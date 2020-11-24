@@ -1,5 +1,0 @@
-[pi]
-192.168.20.22 ansible_python_interpreter=auto
-
-[sportsbar]
-192.168.20.22
