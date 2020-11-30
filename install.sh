@@ -15,8 +15,8 @@ echo
 
 read -e -p "Hostname for the Pi: " -i "pm-monitor" hostname
 
-read -e -p "Do you have a Adafruit PiOLED display?: " -i "N" has_display
-has_display=$(echo $has_display | tr [A-Z] [a-z])
+read -e -p "Do you have a Adafruit PiOLED display? [Y/N]: " -i "N" has_display
+has_display=$(echo $has_display | tr [A-Z] [a-z] | sed 's/y/yes/' | sed 's/n/no/')
 
 read -e -p "datadog API key: " -i "" dd_api_key
 
@@ -40,6 +40,7 @@ else
   echo "exit"
   exit 0
 fi
+
 
 ansible-playbook -u pi \
     -e "hostname=$hostname" \
