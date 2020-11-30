@@ -8,6 +8,7 @@ import socket
 from datetime import datetime
 import gpiozero
 import sds011
+import configparser
 
 from board import SCL, SDA
 import busio
@@ -80,17 +81,28 @@ dd_options = {
 
 datadog.initialize(**dd_options)
 
+config = configparser.ConfigParser()
+config.read('pm.ini')
+has_display = config['DEFAULT'].getboolean('has_display')
+
 # wake up the sensor and give it time to warm up
 sensor.sleep(sleep=False)
 time.sleep(30)
 
-disp, draw, width, height, image = init_screen()
+try:
+  if has_display:
+    disp, draw, width, height, image = init_screen()
+except Exception as e:
+  print("Couldn't init display, skipping")
+  has_display = False
 
 try:
   pm25, pm10 = sensor.query()
   print(f"pm2.5: {pm25}\npm10: {pm10}\n")
   post_to_datadog(pm25, pm10)
-  display_on_screen(pm25, pm10)
+
+  if has_display:
+    display_on_screen(pm25, pm10)
 except Exception as e:
   print(f"Couldn't read sensor: {e}")
   print(traceback.format_exc())

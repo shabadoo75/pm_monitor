@@ -122,6 +122,23 @@
     group: pi
     mode: 0644
 
+- name: copy the .ini file
+  copy:
+    src: pm.ini
+    dest: /home/pi/pm.ini
+    owner: pi
+    group: pi
+    mode: 0644
+
+- name: set up the .ini file
+  lineinfile:
+    path: /home/pi/pm.ini
+    regexp: '^has_display='
+    line: has_display={{ has_display }}
+    owner: pi
+    group: pi
+    mode: '0644'
+
 - name: Setup the PM monitor cron
   cron:
     name: "take a PM reading"
