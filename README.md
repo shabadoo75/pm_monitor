@@ -1,4 +1,4 @@
-# pm_monitor
+# Air quality monitor
 Setup a Raspberry Pi to monitor and report on PM2.5 and PM10 air quality.
 
 ### This project requires

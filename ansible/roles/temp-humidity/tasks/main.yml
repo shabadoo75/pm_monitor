@@ -11,12 +11,6 @@
            'python3',
            'python3-pip',
            'vim',
-           'python-smbus',
-           'i2c-tools',
-           'supervisor',
-           'libopenjp2-7',
-           'libtiff5',
-           'fonts-dejavu'
           ]
     state: latest
     force_apt_get: yes
@@ -29,14 +23,8 @@
   pip:
     executable: /usr/bin/pip3
     name:
-      - pyserial
-      - adafruit-io
-      - gpiozero
       - datadog
-      - adafruit-circuitpython-ssd1306
-      - pillow
-      - RPI.GPIO
-      - adafruit-blinka
+      - adafruit-circuitpython-shtc3
 
 - name: enable SPI
   lineinfile:
@@ -99,57 +87,21 @@
     mode: 0644
     state: link
 
-- name: get the sds011 library
-  unarchive:
-    src: https://github.com/ikalchev/py-sds011/archive/master.zip
-    dest: /home/pi
-    owner: pi
-    group: pi
-    mode: 0755
-    remote_src: yes
-    creates: /home/pi/sds011
-
-- name: move sds011 library dir
-  command:
-    cmd: mv /home/pi/py-sds011-master/sds011 /home/pi/
-    creates: /home/pi/sds011
-
-- name: cleanup DL dir
-  file:
-    path: /home/pi/py-sds011-master
-    state: absent
 
 - name: install code
   copy:
-    src: pm.py
-    dest: /home/pi/pm.py
+    src: temp-humidity.py
+    dest: /home/pi/temp_humidity.py
     owner: pi
     group: pi
     mode: 0644
-
-- name: copy the .ini file
-  copy:
-    src: pm.ini
-    dest: /home/pi/pm.ini
-    owner: pi
-    group: pi
-    mode: 0644
-
-- name: set up the .ini file
-  lineinfile:
-    path: /home/pi/pm.ini
-    regexp: '^has_display='
-    line: has_display={{ has_display }}
-    owner: pi
-    group: pi
-    mode: '0644'
 
 - name: Setup the PM monitor cron
   cron:
-    name: "take a PM reading"
-    minute: "*/5"
+    name: "take a temp reading"
+    minute: "1-59/5"
     user: "pi"
-    job: "python /home/pi/pm.py"
+    job: "python /home/pi/temp_humidity.py"
 
 - name: ssh service state
   service:
