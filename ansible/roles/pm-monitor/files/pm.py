@@ -9,6 +9,7 @@ from datetime import datetime
 import gpiozero
 import sds011
 import configparser
+import traceback
 
 from board import SCL, SDA
 import busio
