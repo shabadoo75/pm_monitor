@@ -61,8 +61,12 @@
     comment: Datadog user
 
 - name: Update file ownership
-  command:
-    cmd: chown datadog:datadog -R /opt/datadog-agent
+  file:
+    path: /opt/datadog-agent
+    state: directory
+    recurse: yes
+    owner: datadog
+    group: datadog
 
 - name: Update Daemon settings
   lineinfile:
