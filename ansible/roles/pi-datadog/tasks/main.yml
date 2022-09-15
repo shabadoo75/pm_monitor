@@ -1,9 +1,18 @@
 ---
 - name: Install new packages
   apt:
-    name: [ 'sysstat' ]
+    name: [ 'sysstat', 'python2', 'python2-dev' ]
     state: present
     force_apt_get: yes
+
+- name: Download pip2 install script
+  get_url:
+    url: https://bootstrap.pypa.io/pip/2.7/get-pip.py
+    dest: /tmp/get-pip.py
+    mode: '0755'
+
+- name: install pip2
+  shell: python2 /tmp/get-pip.py
 
 - name: add dd keys to environment
   blockinfile:
@@ -19,7 +28,7 @@
     mode: "0755"
 
 - name: Run datadog agent install
-  shell: DD_API_KEY={{DD_API_KEY}} DD_START_AGENT=0 DD_SKIP_INTEGRATIONS=1 sh -c /tmp/setup_agent.sh
+  shell: DD_API_KEY={{DD_API_KEY}} DD_START_AGENT=0 DD_SKIP_INTEGRATIONS=0 sh -c /tmp/setup_agent.sh
   args:
     chdir: /tmp
     creates: /root/.datadog-agent/bin/agent
