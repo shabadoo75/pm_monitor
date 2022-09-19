@@ -7,17 +7,16 @@
 
 - name: Install new packages
   apt:
-    name: [
-           'python3',
-           'python3-pip',
-           'vim',
-           'python3-smbus',
-           'i2c-tools',
-           'supervisor',
-           'libopenjp2-7',
-           'libtiff5',
-           'fonts-dejavu'
-          ]
+    name: 
+      - python3
+      - python3-pip
+      - vim
+      - python3-smbus
+      - i2c-tools
+      - supervisor
+      - libopenjp2-7
+      - libtiff5
+      - fonts-dejavu
     state: latest
     force_apt_get: yes
 
@@ -25,9 +24,12 @@
   command:
     cmd: update-alternatives --install /usr/bin/python python /usr/bin/python3 10
 
+- name: make sure pip3 is installed. apt install python3-pip not working?
+  command:
+    cmd: python -m pip install --upgrade pip
+
 - name: install pip packages
   pip:
-    executable: /usr/bin/pip3
     name:
       - pyserial
       - adafruit-io

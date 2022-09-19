@@ -1,7 +1,13 @@
 ---
 - name: Install new packages
   apt:
-    name: [ 'sysstat', 'python2', 'python2-dev' ]
+    name: 
+      - sysstat
+      - python2
+      - python2-dev
+      - libffi-dev
+      - libxml2-dev
+      - libxslt1-dev
     state: present
     force_apt_get: yes
 
@@ -12,7 +18,7 @@
     mode: '0755'
 
 - name: install pip2
-  shell: python2 /tmp/get-pip.py
+  cmd: python2 /tmp/get-pip.py
 
 - name: add dd keys to environment
   blockinfile:
@@ -35,7 +41,7 @@
 
 - name: move datadog to a new home
   command:
-    cmd: cp -r /root/.datadog-agent /opt/datadog-agent
+    cmd: mv -r /root/.datadog-agent /opt/datadog-agent
 
 - name: update paths in venv
   script:
