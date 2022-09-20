@@ -7,11 +7,10 @@
 
 - name: Install new packages
   apt:
-    name: [
-           'python3',
-           'python3-pip',
-           'vim',
-          ]
+    name:
+      - python3
+      - python3-pip
+      - vim
     state: latest
     force_apt_get: yes
 
@@ -21,7 +20,6 @@
 
 - name: install pip packages
   pip:
-    executable: /usr/bin/pip3
     name:
       - datadog
       - adafruit-circuitpython-shtc3
@@ -87,10 +85,9 @@
     mode: 0644
     state: link
 
-
 - name: install code
   copy:
-    src: temp-humidity.py
+    src: temp_humidity.py
     dest: /home/pi/temp_humidity.py
     owner: pi
     group: pi

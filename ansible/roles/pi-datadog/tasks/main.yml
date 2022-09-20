@@ -18,7 +18,7 @@
     mode: '0755'
 
 - name: install pip2
-  cmd: python2 /tmp/get-pip.py
+  shell: python2 /tmp/get-pip.py
 
 - name: add dd keys to environment
   blockinfile:
@@ -38,6 +38,13 @@
   args:
     chdir: /tmp
     creates: /root/.datadog-agent/bin/agent
+
+# The packaged version of psutil failsreading some disk stats on recent linux kernels
+- name: Update the packaged version of psutil
+  pip:
+    name: psutil
+    virtualenv: /root/.datadog-agent/venv
+    virtualenv_command: virtualenv-2.7
 
 - name: move datadog to a new home
   command:
