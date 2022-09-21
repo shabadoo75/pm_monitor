@@ -5,6 +5,10 @@
   hosts: "{{ inventory_hostname }}"
   become_user: root
   become: yes
+  tasks:
+    - name: print facts
+      debug:
+        var: ansible_facts
 
   roles:
     - pi-common
