@@ -39,7 +39,7 @@
     chdir: /tmp
     creates: /root/.datadog-agent/bin/agent
 
-# The packaged version of psutil failsreading some disk stats on recent linux kernels
+# The packaged version of psutil fails reading some disk stats on recent linux kernels
 - name: Update the packaged version of psutil
   pip:
     name: psutil

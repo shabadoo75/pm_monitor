@@ -1,0 +1,60 @@
+---
+- name: Update current packages
+  apt:
+    force_apt_get: yes
+    update_cache: yes
+    upgrade: yes
+
+- name: Install new packages
+  apt:
+    name:
+      - jq
+      - vim
+    state: latest
+    force_apt_get: yes
+
+- name: use vim
+  lineinfile:
+    dest: "{{ item }}/.bashrc"
+    line: 'export EDITOR=vim'
+  with_items:
+    - /home/pi
+    - /root
+
+- name: disable visual mode in vim
+  lineinfile:
+    dest: /etc/vim/vimrc
+    line: "set mouse-=a"
+
+- name: US keyboard layout
+  copy:
+    src: keyboard
+    dest: /etc/default/keyboard
+    owner: root
+    group: root
+    mode: 0644
+
+- name: change the hostname
+  hostname:
+    name: "{{ hostname }}"
+  when: hostname is defined
+
+- name: set the hostname fact also
+  set_fact: ansible_hostname={{ hostname }}
+  when: hostname is defined
+
+- name: add local host name to /etc/hosts
+  replace:
+    path: /etc/hosts
+    regexp: '\slocalhost'
+    replace: "  localhost {{ hostname }}"
+  when: hostname is defined
+
+- name: set the timezone to Sydney
+  file:
+    src: /usr/share/zoneinfo/Australia/Sydney
+    dest: /etc/localtime
+    owner: root
+    group: root
+    mode: 0644
+    state: link
