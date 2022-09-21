@@ -1,17 +1,17 @@
 ---
-- name: Update current packages
-  apt:
-    force_apt_get: yes
-    update_cache: yes
-    upgrade: 'yes'
-
-- name: Install new packages
-  apt:
-    name:
-      - jq
-      - vim
-    state: latest
-    force_apt_get: yes
+#- name: Update current packages
+#  apt:
+#    force_apt_get: yes
+#    update_cache: yes
+#    upgrade: 'yes'
+#
+#- name: Install new packages
+#  apt:
+#    name:
+#      - jq
+#      - vim
+#    state: latest
+#    force_apt_get: yes
 
 - name: use vim
   lineinfile:
