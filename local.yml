@@ -2,7 +2,7 @@
 # This playbook sets up a Pi as a PM monitor
 
 - name: configure pi
-  hosts: "{{ inventory_hostname }}"
+  hosts: pm-monitor
   become_user: root
   become: yes
   tasks:
