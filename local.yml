@@ -2,7 +2,7 @@
 # This playbook sets up a Pi as a PM monitor
 
 - name: configure pi
-  hosts: all
+  hosts: localhost
   become_user: root
   become: yes
 
