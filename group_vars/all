@@ -1,0 +1,3 @@
+---
+# to stop Ansibles warning https://docs.ansible.com/ansible/2.10/reference_appendices/interpreter_discovery.html
+ansible_python_interpreter: /usr/bin/python
